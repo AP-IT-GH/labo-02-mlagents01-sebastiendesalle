@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Target
+  - Green Zone
   layers:
   - Default
   - TransparentFX
