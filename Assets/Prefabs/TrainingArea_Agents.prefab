@@ -322,7 +322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4405621040584813385}
   m_Layer: 0
-  m_Name: TrainingArea
+  m_Name: TrainingArea_Agents
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
