@@ -102,6 +102,7 @@ public class ObelixAgent : Agent
 
             if (correctGeplaatsteMenhirs >= menhirs.Count)
             {
+                AddReward(5.0f);
                 EndEpisode();
             }
         }
