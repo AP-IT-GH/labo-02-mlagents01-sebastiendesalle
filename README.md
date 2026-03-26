@@ -56,3 +56,102 @@
     (https://github.com/Unity-Technologies/ml-agents/tree/release_19_docs/docs)
 
     Introduction to Unity ML-agents (2023). Understand the Interplay of Neural Networks and Simulation Space Using the Unity ML-Agents Package. Geraadpleegd via PDF document.
+
+# DEEL 2 (Obelix)
+
+## Technisch rapport sequentiele taken leren in Unity ML-Agents
+
+### Introductie
+
+    Het doel van dit rapport is om het trainingsproces te documenteren van
+    een ML-Agent (Obelix), gemaakt om een twee-phasige sequentiele taak
+    te kunnen. De Agent moet een Menhir detecteren en oppakken, hierna
+    gaat Obelix met de Menhir naar een drop-off plek (Destination).
+    Dit document zorgt voor inzicht voor developers die willen zien hoe
+    een Agent werkt en traint met een twee-phasige taak.
+
+### Methodes
+
+    De training gebeurt in een 3D arena waar de Agent van af kan vallen.
+    De arena heeft altijd 5 Menhirs en 5 Destinations. De agent volgt een
+    stricte set van physieke en logische regels:
+    Het doel: de Agent moet al de menhirs 1-voor-1 oppakken en op de
+    destinatie zien te krijgen. Wanneer de Destinatie berijkt is wordt
+    de destinatie opaque en inactief.
+    Een episode reset wanneer al de Menhirs succesvol zijn geplaatst, of
+    het reset wanneer de Agent van het platform afvalt of hij het in te veel
+    stappen doet.
+
+### Agent Components en Observations (sensoren)
+
+    De agent gebruikt een combinatie van Ray Perception Sensor 3D en
+    Vector Observaties omdat de agent anders niet weet wanneer de Menhir
+    op zijn rug is of niet. Dit zorgt voor meer consistente training
+    zodat hij exact weet wat er gebeurt. Raycasting gebruikt twee tags:
+    Menhir en Destination, dit wordt als parameter meegegeven.
+
+### Reward systeem en mechanische balancering.
+
+    Het reward systeem werd zeer specifiek toegepast zodat de agent niet
+    vast blijft zitten op bepaalde punten.
+    Een step penalty werd gegeven per stap dat gezet wordt om zo optimaal
+    mogelijk het doel te bereiken.
+    Wanneer de agent van de map valt krijgt hij direct -1.0f zodat hij
+    direct een grote afstraffing krijgt als hij van het platform afvalt.
+    De agent krijgt een reward van 1.0f wanneer hij een Menhir oppakt.
+    Maar als de agent tegen een andere Menhir loopt terwijl hij een Menhir
+    al vast heeft, krijgt hij een penalty van -0.1f. Dit zorgt ervoor dat
+    de agent andere Menhirs niet probeert op te pakken om gratis rewards
+    te krijgen.
+    Wanneer de agent een Menhir op een destinatie plaatst krijgt hij 1.0f
+    als reward, wanneer hij al de Menhirs correct plaatst krijgt hij een
+    reward van 5.0f. Dit zorgt ervoor dat van het moment dat hij het één
+    keer juist doet, hij direct weet wat voor de volgende keer te doen.
+    Wat me na de eerste iteratie opviel was dat hij zeer "jitter" rondliep,
+    dit werd door Hyperparameters te veranderen en in de inspector de
+    "Take action between steps" aan te zetten. Zonder dit wist hij niet goed
+    hoe rond te bewegen.
+
+### Hyperparameters
+
+    Het model werd geconfigureerd met een maximum van 500,000 stappen,
+    een batch_size van 1024 en een large buffer_size van 10240.
+    Dit werd gebruikt zodat hij stabiele updates teruggaf voor een duidelijk
+    beeld van de training. Observation normalization werd op true gezet
+    zodat het netwerk proces beter visuele en binaire statussen begrijpt.
+
+### Resultaten
+
+#### TensorBoard Data: Cumulatieve Rewards
+
+    In het begin was de cumulatieve reward score negatief. De agent viel
+    regelmatig van de map af, of kreeg veel penalties omdat hij het pick-up
+    mechanisme nog niet snapte. Moment dat hij zag dat de Menhir direct een
+    1.0f reward gaf steeg de grafiek zeer snel, met een caveat: hij probeerde
+    direct erna alleen maar andere Menhirs aan te raken voor dezelfde reward.
+    Nadat hij toevallig over een Destination ging kreeg hij nogeens 1.0f reward.
+    Dit zorgde ervoor dat hij snel begreep wat het doel was. Nadat hij het
+    doel meerdere keren behaalde kreeg de agent 5.0f reward erbij, dit kan
+    je ook zien in de graph rond 150,000 stappen. Dit is de reden waarom de
+    grafiek begint te stabiliseren na dit punt, hij wist wat te doen en vond
+    een snellere manier om dit te doen, maar maakte natuurlijk soms nog fouten.
+
+![obelix_cumulative](obelix_cumulative.png)
+
+### Conclusie
+
+    De resultaten demostreren dat een agent trainen die meerdere taken doet,
+    een complexe situatie maakt met veel veranderingen in de code en bugs.
+    Het rewardsysteem werd meerdere keren aangepast samen met de Hyperparameters,
+    Dit zorgde voor een optimaal maar ingewikkeld proces. Het implementeren
+    van logische penalties zoals de agent die een andere Menhir raakt terwijl
+    hij al een Menhir op zijn rug heeft was noodzakelijk zodat hij verder
+    geraakte in zijn training, zonder dit zou hij vast blijven op de eerste taak.
+
+### Referenties
+
+    Unity Technologies (2022). ML-Agents Documentation: Ray Perception Sensor.
+    via GitHub.
+    (https://github.com/Unity-Technologies/ml-agents/tree/release_19_docs/docs)
+
+    Google Gemini voor de aanpassingen van de Hyperparameters.
