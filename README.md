@@ -147,6 +147,12 @@
     van logische penalties zoals de agent die een andere Menhir raakt terwijl
     hij al een Menhir op zijn rug heeft was noodzakelijk zodat hij verder
     geraakte in zijn training, zonder dit zou hij vast blijven op de eerste taak.
+    De patronen van de agent waren duidelijk te zien, hoe hij iets nieuw probeert,
+    faalt en een slechte reward krijgt. Maar dan toch nog een hogere score bereikt
+    met de nieuwe tactiek. Het is mogelijk dat dit continu blijft gaan door kleine
+    optimalisaties maar dan komen we aan de 1 miljoen stappen om kleine veranderingen
+    te zien in het werkelijk model. Daarom stop ik de training na 500,000 stappen
+    omdat het duidelijk was dat hij het doel kon bereiken.
 
 ### Referenties
 
